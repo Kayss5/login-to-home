@@ -1,124 +1,224 @@
+  (function () {
+    'use strict';
 
-  const toggleBtn = document.getElementById('toggleSidebar');
-  const sidebar = document.querySelector('.sidebar');
-  const plusBtn = document.querySelector('.fa-plus');
-  const modal = document.getElementById('modal');
-  const closeModal = document.getElementById('closeModal');
-  const addFuncBtn = document.getElementById('addFuncBtn');
-  const funcNameInput = document.getElementById('funcName');
-  const itemList = document.querySelector('.item-list');
+    // ---------- Cache de seletores ----------
+    const SELECTORS = {
+      toggleBtn: '#toggleSidebar',
+      sidebar: '.sidebar',
+      plusBtn: '.fa-plus',
+      modal: '#modal',
+      closeModal: '#closeModal',
+      addFuncBtn: '#addFuncBtn',
+      funcNameInput: '#funcName',
+      itemList: '.item-list',
+      menuItems: '.menu-item',
+      menuLinks: '.menu a[data-target]',
+      sections: '.content-section',
+      pageTitle: '#page-title',
+      loader: '#loader'
+    };
 
-  toggleBtn.addEventListener('click', () => {
-    sidebar.classList.toggle('active');
-  });
+    // Elementos (populados na inicialização)
+    const el = {};
 
-document.addEventListener('DOMContentLoaded', () => {
-  const menuItems = document.querySelectorAll('.menu-item');
-  const menuLinks = document.querySelectorAll('.menu a[data-target]');
-  const sections = document.querySelectorAll('.content-section');
-  const pageTitle = document.getElementById('page-title');
+    // ---------- Funções utilitárias ----------
+    /** Seleciona e retorna um elemento, com fallback para null */
+    function $(selector) {
+      return document.querySelector(selector);
+    }
 
-  // Clique em item principal para abrir submenu e alternar seção
-  menuItems.forEach(item => {
-    const anchor = item.querySelector('a');
+    /** Seleciona e retorna NodeList */
+    function $all(selector) {
+      return document.querySelectorAll(selector);
+    }
 
-    anchor.addEventListener('click', (e) => {
-      e.preventDefault(); // impedir comportamento padrão do link
+    // ---------- Handlers e lógica ----------
+    function toggleSidebar() {
+      if (!el.toggleBtn || !el.sidebar) return;
+      el.toggleBtn.addEventListener('click', () => {
+        el.sidebar.classList.toggle('active');
+      });
+    }
 
-      // Alternar submenu
-      const isOpen = item.classList.contains('open');
-      menuItems.forEach(i => i.classList.remove('open'));
-      if (!isOpen) item.classList.add('open');
+    function setupMenuNavigation() {
+      const menuItems = el.menuItems;
+      const menuLinks = el.menuLinks;
+      const sections = el.sections;
+      const pageTitle = el.pageTitle;
 
-      // Atualiza título e seção apenas se tiver data-target
-      const target = anchor.getAttribute('data-target');
-      if (target) {
-        pageTitle.textContent = anchor.textContent.trim();
+      if (!menuItems || !menuLinks || !sections || !pageTitle) return;
 
-        menuLinks.forEach(l => l.classList.remove('active'));
-        anchor.classList.add('active');
+      // Principal: clique em item para abrir submenu e alternar seção
+      menuItems.forEach(item => {
+        const anchor = item.querySelector('a');
+        if (!anchor) return;
 
-        sections.forEach(section => section.style.display = 'none');
-        const targetSection = document.getElementById(target);
-        if (targetSection) {
-          targetSection.style.display = 'flex';
+        // Ao clicar no anchor, alterna o estado do menu. Se já estiver aberto, fecha.
+        anchor.addEventListener('click', (e) => {
+          e.preventDefault();
+
+          // Se já estiver aberto, fecha; caso contrário, abre e fecha os outros
+          const isOpen = item.classList.contains('open');
+          if (isOpen) {
+            item.classList.remove('open');
+            return; // já estava aberto: fecha e não altera seção
+          }
+
+          // Abre este e fecha os demais
+          menuItems.forEach(i => i.classList.remove('open'));
+          if (menuItems) {}
+          item.classList.add('open');
+
+          // Se houver target, atualiza título e exibe seção
+          const target = anchor.getAttribute('data-target');
+          if (target) {
+            pageTitle.textContent = anchor.textContent.trim();
+            menuLinks.forEach(l => l.classList.remove('active'));
+            anchor.classList.add('active');
+
+            sections.forEach(section => section.style.display = 'none');
+            const targetSection = document.getElementById(target);
+            if (targetSection) targetSection.style.display = 'flex';
+          }
+        });
+
+        // Para permitir fechar o menu clicando em qualquer parte do item (não só no anchor),
+        // escutamos clicks no próprio .menu-item e ignoramos clicks que já vieram do anchor
+        item.addEventListener('click', (e) => {
+          // Se o clique foi no <a> ou em um de seus filhos, deixamos o handler do anchor tratar
+          if (e.target.closest('a')) return;
+
+          // Toggle: se estiver aberto fecha, se fechado abre (fechando os outros)
+          const isOpen = item.classList.contains('open');
+          if (isOpen) {
+            item.classList.remove('open');
+          } else {
+            menuItems.forEach(i => i.classList.remove('open'));
+            item.classList.add('open');
+          }
+        });
+      });
+
+      // Garante que qualquer link com data-target faça navegação
+      menuLinks.forEach(link => {
+        link.addEventListener('click', (e) => {
+          e.preventDefault();
+          const target = link.getAttribute('data-target');
+          if (!target) return;
+
+          // Atualiza título e ativa o link
+          pageTitle.textContent = link.textContent.trim();
+          menuLinks.forEach(l => l.classList.remove('active'));
+          link.classList.add('active');
+
+          // Abre o menu pai correspondente
+          const parentItem = link.closest('.menu-item');
+          if (parentItem) {
+            menuItems.forEach(i => i.classList.remove('open'));
+            parentItem.classList.add('open');
+          }
+
+          // Mostra a seção alvo e esconde as outras
+          sections.forEach(section => section.style.display = 'none');
+          const targetSection = document.getElementById(target);
+          if (targetSection) {
+            targetSection.style.display = 'flex';
+            targetSection.scrollIntoView({ behavior: 'smooth' });
+          }
+        });
+      });
+
+      // Fecha menus se clicar fora
+      document.addEventListener('click', (e) => {
+        const isClickInside = e.target.closest('.menu-item');
+        if (!isClickInside) {
+          menuItems.forEach(item => item.classList.remove('open'));
         }
+      });
+    }
+
+    function setupLoader() {
+      const loader = el.loader;
+      if (!loader) return;
+      window.addEventListener('load', () => {
+        loader.style.opacity = '0';
+        setTimeout(() => loader.style.display = 'none', 500);
+      });
+    }
+
+    function setupModal() {
+      const plusBtn = el.plusBtn;
+      const modal = el.modal;
+      const closeModal = el.closeModal;
+      const addFuncBtn = el.addFuncBtn;
+      const funcNameInput = el.funcNameInput;
+      const itemList = el.itemList;
+
+      if (plusBtn && modal && funcNameInput) {
+        plusBtn.addEventListener('click', () => {
+          modal.style.display = 'flex';
+          funcNameInput.value = '';
+          funcNameInput.focus();
+        });
       }
-    });
-  });
 
-// Adicionado: garante que qualquer link com data-target faça a navegação real
-menuLinks.forEach(link => {
-  link.addEventListener('click', (e) => {
-    e.preventDefault();
-    const target = link.getAttribute('data-target');
-    if (!target) return;
+      if (closeModal && modal) {
+        closeModal.addEventListener('click', () => {
+          modal.style.display = 'none';
+        });
+      }
 
-    //Atualiza título e marca ativo
-    pageTitle.textContent = link.textContent.trim();
-    menuLinks.forEach(l => l.classList.remove('active'));
-    link.classList.add('active');
+      // Adicionar nova função à lista
+      if (addFuncBtn && funcNameInput && itemList && modal) {
+        addFuncBtn.addEventListener('click', () => {
+          const name = funcNameInput.value.trim();
+          if (!name) return;
 
-    //Abre o menu pai correspondente
-    const parentItem = link.closest('.menu-item');
-    if (parentItem) {
-      menuItems.forEach(i => i.classList.remove('open'));
-      parentItem.classList.add('open');
+          const newItem = document.createElement('div');
+          newItem.className = 'item';
+          newItem.innerHTML = `\n          <div class="circle pink"></div>\n          <div class="item-info">\n            <strong>${escapeHtml(name)}</strong>\n            <p>Classe dos dados: <span>Personalizado</span></p>\n          </div>\n        `;
+          itemList.appendChild(newItem);
+          modal.style.display = 'none';
+        });
+      }
     }
 
-    // Mostra a seção alvo e esconde as outras
-    sections.forEach(section => section.style.display = 'none');
-    const targetSection = document.getElementById(target);
-    if (targetSection) {
-      targetSection.style.display = 'flex';
-      targetSection.scrollIntoView({ behavior: 'smooth' });
+    // Pequena função para escapar texto inserido pelo usuário (evita XSS simples)
+    function escapeHtml(str) {
+      return str.replace(/[&<>"']/g, (c) => ({
+        '&': '&amp;',
+        '<': '&lt;',
+        '>': '&gt;',
+        '"': '&quot;',
+        "'": '&#39;'
+      }[c]));
     }
-  });
-});
 
+    // ---------- Inicialização ----------
+    function init() {
+      // Popula elementos no objeto el (cache)
+      Object.keys(SELECTORS).forEach((key) => {
+        const sel = SELECTORS[key];
+        // para NodeList usamos $all quando apropriado
+        if (key === 'menuItems' || key === 'menuLinks' || key === 'sections') {
+          el[key] = $all(sel);
+        } else {
+          el[key] = $(sel);
+        }
+      });
 
-document.addEventListener('click', (e) => {
-  const isClickInside = e.target.closest('.menu-item');
-  if (!isClickInside) {
-    document.querySelectorAll('.menu-item').forEach(item => item.classList.remove('open'));
-  }
-});
+      // Executa configurações
+      toggleSidebar();
+      setupMenuNavigation();
+      setupLoader();
+      setupModal();
+    }
 
-window.addEventListener('load', () => {
-  const loader = document.getElementById('loader');
-  if (loader) {
-    loader.style.opacity = '0';
-    setTimeout(() => loader.style.display = 'none', 500);
-  }
-});
+    // Executa init quando DOM pronto
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', init);
+    } else {
+      init();
+    }
 
-// Abrir modal
-plusBtn.addEventListener('click', () => {
-  modal.style.display = 'flex';
-  funcNameInput.value = '';
-  funcNameInput.focus();
-});
-
-// Fechar modal
-closeModal.addEventListener('click', () => {
-  modal.style.display = 'none';
-});
-
-// Adicionar nova função
-  addFuncBtn.addEventListener('click', () => {
-    const name = funcNameInput.value.trim();
-    if (!name) return;
-
-    const newItem = document.createElement('div');
-    newItem.className = 'item';
-    newItem.innerHTML = `
-      <div class="circle pink"></div>
-      <div class="item-info">
-        <strong>${name}</strong>
-        <p>Classe dos dados: <span>Personalizado</span></p>
-      </div>
-    `;
-    itemList.appendChild(newItem);
-    modal.style.display = 'none';
-  });
-});
+  })();
