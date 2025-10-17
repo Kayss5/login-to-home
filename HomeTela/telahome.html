@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8">
+  <title>Sydle x VNET - Home</title>
+  <link rel="stylesheet" href="homestyle.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="home.js" defer></script>
+</head>
+<body>
+  <div id="loader" class="loader-overlay">
+    <div class="spinner"></div>
+  </div>
+
+
+  <div class="topbar">
+    <button id="toggleSidebar" class="hamburger">
+      <i class="fas fa-bars"></i>
+    </button>
+    <h1 id="page-title">Ínicio</h1>
+
+    <div class="top-actions">
+      <i class="fas fa-plus"></i>
+      <i class="fas fa-star"></i>
+      <i class="fas fa-bell"></i>
+      <div class="avatar"></div>
+    </div>
+  </div>
+  
+  <div class="sydle-container">
+    <aside class="sidebar">
+      <img src="./logo-vnet.png" alt="logo-vnet">
+
+      <nav class="menu">
+        <div class="menu-item">
+        <a data-target="Ínicio"><i class="fas fa-home"></i> Ínicio
+        <i class="fas fa-chevron-down submenu-icon"></i>
+        </a>
+          <ul class="submenu">
+            <li>Dashboard</li>
+            <li>Relatórios</li>
+          </ul>
+        </div>
+      <div class="menu-item">
+        <a data-target="Análise"><i class="fas fa-chart-bar"></i> Análise
+        <i class="fas fa-chevron-down submenu-icon"></i>
+        </a>
+        <ul class="submenu">
+          <li>Dados</li>
+          <li>Contratos</li>
+        </ul>
+      </div>
+      <div class="menu-item">
+        <a data-target="explorer"><i class="fas fa-box"></i> Explorar
+        <i class="fas fa-chevron-down submenu-icon"></i>
+        </a>
+            <ul class="submenu">
+              <li>Itens</li>
+              <li>Pastas</li>
+            </ul>
+          </div>
+      <div class="menu-item">
+        <a data-target="processos"><i class="fas fa-tasks"></i> Processos
+        <i class="fas fa-chevron-down submenu-icon"></i>
+        </a>
+        <ul class="submenu">
+          <li>Fila</li>
+          <li>Histórico</li>
+        </ul>
+      </div>
+      </nav>
+      <footer class="sidebar-footer">© VOANET - voanet.com v.0.0.1 / 7.25.1</footer>
+    </aside>
+
+    <main class="main-content">
+      <section class="left-panel">
+        <div class="header">
+          <span>3 itens</span>
+          <div class="header-right">
+            <input type="text" placeholder="Buscar...">
+            <button class="more-btn"><i class="fas fa-ellipsis-v"></i></button>
+          </div>
+        </div>
+
+        <button id="toggleSidebar" class="sidebar-toggle">
+            <i class="fas fa-bars"></i>
+        </button>
+
+        <div class="item-list">
+          <div class="item">
+            <div class="circle pink"></div>
+            <div class="item-info">
+              <strong>Consumo de operações custosas</strong>
+              <p>Classe dos dados: <span>Log</span>, <span>Sistema</span></p>
+            </div>
+          </div>
+
+          <div class="item">
+            <div class="circle pink"></div>
+            <div class="item-info">
+              <strong>Performance de execução de método</strong>
+              <p>Classe dos dados: <span>Log</span>, <span>Sistema</span></p>
+            </div>
+          </div>
+
+          <div class="item">
+            <div class="circle pink"></div>
+            <div class="item-info">
+              <strong>Usos dos motores</strong>
+              <p>Classe dos dados: <span>Classe</span>, <span>Sistema</span></p>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <section class="right-panel">
+        <p>Nenhum item selecionado.</p>
+      </section>
+    </main>
+  </div>
+  <section id="analytics" class="content-section">
+    <!-- sua left-panel e right-panel aqui -->
+  </section>
+
+  <!-- Seção de conteúdo de Explorer -->
+    <section id="explorer" class="content-section" style="display:none;">
+      <p>Conteúdo da área Explorer</p>
+    </section>
+
+  <!-- Seção de conteúdo de Processos -->
+    <section id="processos" class="content-section" style="display:none;">
+      <p>Conteúdo da área Processos</p>
+    </section>
+
+    <div id="modal" class="modal">
+  <div class="modal-content">
+    <span id="closeModal" class="close">&times;</span>
+    <h2>Nova Função</h2>
+    <input type="text" id="funcName" placeholder="Nome da função">
+    <button id="addFuncBtn">Adicionar</button>
+  </div>
+</div>
+
+
+  </main>
+</body>
+</html>

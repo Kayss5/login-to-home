@@ -1,0 +1,167 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+main {
+    background-color: #4b4b4b;
+    font-family: Arial, sans-serif;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: #fff;
+    
+}
+
+.login-container {
+    text-align: center;
+}
+
+.login-box {
+    background-color: #fff;
+    color: #000000;
+    border-radius: 10px;
+    border: 1px solid #ffffff;
+    padding: 30px;
+    width: 320px;
+    box-shadow: 0 0 1000px rgba(255, 255, 255, 0.2);
+}
+
+.logo-header {
+    background-color: brown;
+    padding: 20px;
+    margin: -30px -30px 20px -30px;
+    border-top-left-radius: 10px;
+    border-top-right-radius: 10px;
+    box-sizing: border-box;
+}
+
+.logo-header img {
+    max-width: 100%;
+}
+
+form {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+}
+
+label {
+    margin-top: 10px;
+    font-weight: normal;
+}
+
+input[type="text"],
+input[type="password"] {
+    width: 100%;
+    padding: 8px 0;
+    border: none;
+    border-bottom: 1px solid #ccc;
+    background: transparent;
+    outline: none;
+    font-size: 14px;
+    transition: border-color 0.3s;
+}
+
+input[type="text"]:focus,
+input[type="password"]:focus {
+    border-bottom: 1px solid #000;
+}
+
+
+.error-msg {
+    color: red;
+    font-size: 12px;
+    margin-top: 4px;
+    display: none;
+}
+
+button {
+    margin-top: 20px;
+    padding: 10px;
+    background-color: brown;
+    color: #fff;
+    border: none;
+    border-radius: 20px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+button:hover {
+    background-color: #222;
+}
+
+.footer-select {
+    margin-top: 15px;
+}
+
+select {
+    padding: 5px;
+    border-radius: 50px;
+    background-color: #e6e6e6;
+    border: #ffffff;
+    font: arial;
+    text-align: left;
+    position: relative;
+    right: 82px
+}
+
+footer {
+    position: absolute;
+    bottom: 10px;
+    margin-top: 20px;
+    font-size: 13px;
+    color: #ffffff;
+    font-family: Arial;
+    font-weight: bold;
+}
+
+.password-container {
+    position: relative;
+    width: 100%;
+}
+
+.password-container input {
+    width: 100%;
+    padding-right: 30px; /* espaço pro ícone */
+}
+
+#togglePassword {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    cursor: pointer;
+    color: #333;
+}
+
+.loader-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: #1f1f1f;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 9999;
+    transition: opacity 15.5s ease;
+}
+
+.spinner {
+    width: 50px;
+    height: 50px;
+    border: 6px solid #ccc;
+    border-top-color: #ff000d;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    to {
+    transform: rotate(360deg);
+    }
+}
